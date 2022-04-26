@@ -12,3 +12,5 @@ export const GetCategoryListApi = (params) => request.get('/my-blog/admin/catego
 export const PostAddCategoryApi = (params) => request.post('/my-blog/admin/category/addCategory', params)
 export const PostUpdateCategoryApi = (params) => request.post('/my-blog/admin/category/updateCategory', params)
 export const PostDelCategoryApi = (params) => request.post('/my-blog/admin/category/delCategory', params)
+
+export const GetArticleListApi = (params) => request.get('/my-blog/admin/article/getArticleList', {params})

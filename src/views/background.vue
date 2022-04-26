@@ -1,6 +1,6 @@
 <template>
 <div>
-<el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
+<el-radio-group v-if="isShow" v-model="isCollapse" style="margin-bottom: 20px;">
   <el-radio-button :label="false">展开</el-radio-button>
   <el-radio-button :label="true">收起</el-radio-button>
 </el-radio-group>
@@ -24,6 +24,7 @@
     data() { 
         return { 
           isCollapse: false,
+          isShow: false,
             navList:[ 
             {name:'/admin/managerUsers',navItem:'用户管理'}, 
             {name:'/admin/managerCategory',navItem:'文章类别管理'},

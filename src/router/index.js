@@ -6,7 +6,7 @@ const AdminView = () => import(/* webpackChunkName: "AdminView" */ '../views/bac
 const Login = () => import(/* webpackChunkName: "Login" */ '../components/login.vue')
 const ManagerUsers = () => import(/* webpackChunkName: "ManagerUsers" */ '../components/managerUsers.vue')
 const ManagerCategory = () => import(/* webpackChunkName: "ManagerCategory" */ '../components/managerCategory.vue')
-const managerArticle = () => import(/* webpackChunkName: "ManagerCategory" */ '../components/test.vue')
+const managerArticle = () => import(/* webpackChunkName: "ManagerCategory" */ '../components/managerArticle.vue')
 Vue.use(Router)
 
 const routes = [
