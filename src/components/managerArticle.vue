@@ -16,7 +16,7 @@
     <el-button type="primary" icon="el-icon-search" @click="getArticleList">查询</el-button>
   </el-form-item>
   
-  <el-button type="primary"  @click="dialogFormVisible = true">去写文章</el-button>
+  <el-button type="primary"  @click="toEdit">去写文章</el-button>
 </el-form>
 
 <el-row>
@@ -68,6 +68,11 @@ created() {
       this.getArticleList()
     },  
 methods: {
+  toEdit(){
+    console.log(this.$parent.isShow)
+      this.$parent.isShow = false
+      this.$router.push('/admin/editArticle')
+  },
   extractColorByName(name) {
 	      var temp = [];
 	      temp.push("#");

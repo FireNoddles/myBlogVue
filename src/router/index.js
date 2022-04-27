@@ -7,6 +7,7 @@ const Login = () => import(/* webpackChunkName: "Login" */ '../components/login.
 const ManagerUsers = () => import(/* webpackChunkName: "ManagerUsers" */ '../components/managerUsers.vue')
 const ManagerCategory = () => import(/* webpackChunkName: "ManagerCategory" */ '../components/managerCategory.vue')
 const managerArticle = () => import(/* webpackChunkName: "ManagerCategory" */ '../components/managerArticle.vue')
+const editArticle = () => import(/* webpackChunkName: "ManagerCategory" */ '../components/edit.vue')
 Vue.use(Router)
 
 const routes = [
@@ -58,6 +59,14 @@ const routes = [
         path: 'managerArticle',
         name: 'managerArticle',
         component: managerArticle,
+        meta:{
+          requireAuth:"true",
+        },
+      },
+      {
+        path: 'editArticle',
+        name: 'editArticle',
+        component:editArticle,
         meta:{
           requireAuth:"true",
         },
