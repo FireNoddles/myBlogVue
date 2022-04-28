@@ -10,7 +10,7 @@
       </el-select>
   </el-form-item>
   <el-form-item label="简介">
-    <el-input style="width: 1100px;" type="textarea" v-model="addArticleParas.name" placeholder="文章简介"></el-input>
+    <el-input style="width: 1100px;" type="textarea" v-model="addArticleParas.desc" placeholder="文章简介"></el-input>
   </el-form-item>
 </el-form>
     <div style="border: 1px solid #ccc;">
@@ -38,7 +38,7 @@
 import Vue from 'vue'
 import '@wangeditor/editor/dist/css/style.css'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
-import {GetCategoryListApi} from '@/request/api.js'
+import {GetCategoryListApi, PostAddArticleApi} from '@/request/api.js'
 export default Vue.extend({
     components: { Editor, Toolbar },
     data() {
@@ -46,22 +46,54 @@ export default Vue.extend({
             category_list : [],
             addArticleParas:{
               name:"",
-              category_id:"",
+              category_id:1,
               desc:"",
               content:""
             },
             editor: null,
             toolbarConfig: { },
-            editorConfig: { placeholder: '请输入内容...' },
+            editorConfig: { placeholder: '请输入内容...',MENU_CONF:{} },
             mode: 'default', // or 'simple'
         }
     },
     created() {
       this.getCategoryList()
+      this.initUpload()
     }, 
     methods: {
       addArticle(){
-        
+        this.addArticleParas.content = this.editor.getHtml()
+        PostAddArticleApi(this.addArticleParas).then(res=>{
+          if (res.data.status === 0) {
+            alert("成功")
+          }else{
+            alert(res.data.message)
+          }
+        })
+      },
+      initUpload(){
+        const token = window.sessionStorage.getItem('token')
+        this.editorConfig.MENU_CONF['uploadImage'] = {
+            server: 'http://localhost:8000/my-blog/admin/file/upload',
+            headers: {
+              Authorization: `Bearer ${token}`
+            },
+            fieldName: 'file',
+            customInsert(res, insertFn) {
+              var url = ""
+              var alt = ""
+              var href = ""
+              console.log(res.data)
+              if (res.status === 0) {
+                url = res.data.url
+              }else{
+                alert(res.data.message)
+                return
+              }
+        // 从 res 中找到 url alt href ，然后插图图片
+              insertFn(url, alt, href)
+            },
+        }
       },
       getCategoryList(){
         this.category_list.length=0
@@ -83,10 +115,11 @@ export default Vue.extend({
       },
         onCreated(editor) {
             this.editor = Object.seal(editor) // 一定要用 Object.seal() ，否则会报错
+            
         },
-        onChanged(editor) {
-            console.log(editor.getHtml()) // 一定要用 Object.seal() ，否则会报错
-        },
+        // onChanged(editor) {
+        //     console.log(editor.getHtml()) // 一定要用 Object.seal() ，否则会报错
+        // },
     },
 
     beforeDestroy() {

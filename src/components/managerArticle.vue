@@ -23,13 +23,17 @@
   <el-col :span="20" v-for="(o, index) in this.card_data.list" :key="index" :offset="0" >
     <el-card :body-style="{ padding: '20px' }" class ="card">
         <el-avatar class = "image" shape="square" :style="`background:${extractColorByName(o.name)}`"> {{o.id}} </el-avatar>
-      <div class="text">
-        <span>{{o.name}}</span>
+      <div>
+        <router-link :to="{path:'/admin/readArticle',query: {id: o.id}}" >
+          <span class="text">{{o.name}}</span>
+        
         <div class="bottom clearfix">
           <time class="time">{{ o.desc }}</time>
-          <el-button type="primary" plain size="small" class="comment">评论:{{o.comment_count}}</el-button>
-          <el-button type="primary" plain size="small" class="read">阅读:{{o.read_count}}</el-button>
+          
         </div>
+        </router-link>
+        <el-button type="primary" plain size="small" class="comment">评论:{{o.comment_count}}</el-button>
+          <el-button type="primary" plain size="small" class="read">阅读:{{o.read_count}}</el-button>
       </div>
     </el-card>
   </el-col>
@@ -133,6 +137,9 @@ methods: {
 
 <style>
   .time {
+    padding: 0px;
+    margin-left: 100px;
+    margin-top: -45px;
     font-size: 13px;
     color: #999;
   }
@@ -146,12 +153,12 @@ methods: {
   }
 
   .read {
-    margin-top: -5px;
+    margin-top: -20px;
     float: right;
   }
 
   .comment {
-    margin-top: -40px;
+    margin-top: -65px;
     float: right;
   }
 
@@ -161,10 +168,14 @@ methods: {
     display: block;
   }
   .text {
+    text-decoration:none;
     padding: 0px;
     margin-left: 100px;
-    margin-top: -50px;
+    margin-top: -45px;
     display: block;
+    font-size:20px;
+    color: black;
+    
   }
 
   .clearfix:before,
@@ -176,4 +187,12 @@ methods: {
   .clearfix:after {
       clear: both
   }
+  .router-link-active {
+  text-decoration: none;
+  color: yellow;
+}
+a{
+  text-decoration: none;
+  color: white;
+}
 </style>

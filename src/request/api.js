@@ -14,3 +14,7 @@ export const PostUpdateCategoryApi = (params) => request.post('/my-blog/admin/ca
 export const PostDelCategoryApi = (params) => request.post('/my-blog/admin/category/delCategory', params)
 
 export const GetArticleListApi = (params) => request.get('/my-blog/admin/article/getArticleList', {params})
+export const GetArticleInfoApi = (params) => request.get('/my-blog/admin/article/getArticleInfo', {params})
+export const PostAddArticleApi = (params) => request.post('/my-blog/admin/article/addArticle', params)
+
+export const PostPicApi = (params) => request.post('/my-blog/admin/file/upload', params)
