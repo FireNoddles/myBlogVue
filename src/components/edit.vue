@@ -28,7 +28,7 @@
         />
     </div>
     <div class="button">
-        <el-button type="success" @click="addArticle">提交</el-button>
+        <el-button type="success" @click="editArticle">提交</el-button>
         <el-button type="warning" @click="cancleArticle">取消</el-button>
     </div>
 </div>
@@ -38,13 +38,16 @@
 import Vue from 'vue'
 import '@wangeditor/editor/dist/css/style.css'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
-import {GetCategoryListApi, PostAddArticleApi} from '@/request/api.js'
+import {GetCategoryListApi, PostAddArticleApi, GetArticleInfoApi, PostUpdateArticleApi} from '@/request/api.js'
+import 'prismjs/themes/prism-twilight.min.css'
 export default Vue.extend({
     components: { Editor, Toolbar },
     data() {
         return {
             category_list : [],
+            
             addArticleParas:{
+              id:0,
               name:"",
               category_id:1,
               desc:"",
@@ -59,13 +62,53 @@ export default Vue.extend({
     created() {
       this.getCategoryList()
       this.initUpload()
+      this.ifUpdate()
     }, 
     methods: {
+      cancleArticle(){
+        this.$router.push('/admin/managerArticle')
+      },
+      ifUpdate(){
+        if (this.$route.query.id != null){
+          var search_data = {
+            id:""
+          }
+          search_data.id = parseInt(this.$route.query.id)
+            GetArticleInfoApi(search_data).then(res=>{
+                if (res.data.status === 0) {
+                    this.addArticleParas.name = res.data.data.name
+                    this.addArticleParas.id = res.data.data.id
+                    this.addArticleParas.category_id = res.data.data.cid
+                    this.addArticleParas.desc = res.data.data.desc
+                    this.editor.dangerouslyInsertHtml(res.data.data.content)
+
+                }else{
+                    alert(res.data.message)
+                }
+            })
+        }
+      },
+      editArticle(){
+        if (this.addArticleParas.id != 0){
+          this.addArticleParas.content = this.editor.getHtml()
+          PostUpdateArticleApi(this.addArticleParas).then(res=>{
+            if (res.data.status === 0) {
+              alert("成功")
+              this.$route.push('admin/managerArticle')
+            }else{
+              alert(res.data.message)
+          }
+        })
+        }else{
+          addArticle()
+        }
+      },
       addArticle(){
         this.addArticleParas.content = this.editor.getHtml()
         PostAddArticleApi(this.addArticleParas).then(res=>{
           if (res.data.status === 0) {
             alert("成功")
+            this.$router.push('/admin/managerArticle')
           }else{
             alert(res.data.message)
           }

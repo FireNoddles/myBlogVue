@@ -38,6 +38,20 @@
     </el-card>
   </el-col>
 </el-row>
+<el-row>
+  <el-col :span=24><div class = "pagepos">
+    <el-pagination
+  background
+  layout="prev, pager, next"
+  :page-size="searchParas.page_size"
+  :current-page="page_num"
+  :hide-on-single-page="true"
+  :total="card_data.total"
+  @current-change="pageChange"
+  >
+</el-pagination>
+    </div></el-col>
+</el-row>
 </div>
 
 
@@ -51,6 +65,7 @@ export default({
   components: { Editor},
 data() {
       return {
+        page_num:1,
         currentDate: new Date(),
         detail:"",
         searchParas:{
@@ -106,6 +121,11 @@ methods: {
           }
         })
       },
+      pageChange(val){
+      this.searchParas.page_num = val
+      this.getArticleList()
+      
+    },
   getArticleList(){
         this.card_data.list=[]
         this.card_data.total = 0
@@ -123,6 +143,7 @@ methods: {
               let data = res.data.data.list[key]
               this.card_data.list.push(data)
             }
+            this.page_num = this.searchParas.page_num
           }else{
             alert(res.data.message)
           }
@@ -143,7 +164,12 @@ methods: {
     font-size: 13px;
     color: #999;
   }
-  
+  .pagepos{
+    margin-top: 30px;
+    display: flex;    
+    justify-content: center; 
+
+  }
   .bottom {
     margin-top: 13px;
     line-height: 12px;
