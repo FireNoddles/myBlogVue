@@ -2,7 +2,7 @@
 <div>
 <el-form :inline="true" :model="addArticleParas"  class="demo-form-inline" >
   <el-form-item label="标题">
-    <el-input style="width: 850px;" v-model="addArticleParas.name" placeholder="文章标题"></el-input>
+    <el-input style="width: 850px;" v-model="addArticleParas.name" placeholder="文章标题" @blur="autoSave"></el-input>
   </el-form-item>
     <el-form-item label="类别" >
       <el-select v-model="addArticleParas.category_id" placeholder="类别">
@@ -28,7 +28,7 @@
         />
     </div>
     <div class="button">
-        <el-button type="success" @click="editArticle">提交</el-button>
+        <el-button type="success" @click="shutDownEdit">提交</el-button>
         <el-button type="warning" @click="cancleArticle">取消</el-button>
     </div>
 </div>
@@ -45,7 +45,8 @@ export default Vue.extend({
     data() {
         return {
             category_list : [],
-            
+            timeTag:0,
+            isFisrtAuto:true,
             addArticleParas:{
               id:0,
               name:"",
@@ -65,6 +66,20 @@ export default Vue.extend({
       this.ifUpdate()
     }, 
     methods: {
+      autoSave(){
+        if (this.isFisrtAuto === false){
+          return
+        }
+        this.isFisrtAuto = false
+        this.timeTag = setInterval(()=>{
+          if (this.addArticleParas.name === ""){
+            return 
+          }else{
+          this.editArticle()
+        } }, 60000);
+        
+        
+      },
       cancleArticle(){
         this.$router.push('/admin/managerArticle')
       },
@@ -88,31 +103,44 @@ export default Vue.extend({
             })
         }
       },
+      shutDownEdit(){
+        clearInterval(this.timeTag)
+        this.editArticle()
+        this.$router.push('/admin/managerArticle')
+      },
+
       editArticle(){
         if (this.addArticleParas.id != 0){
           this.addArticleParas.content = this.editor.getHtml()
           PostUpdateArticleApi(this.addArticleParas).then(res=>{
             if (res.data.status === 0) {
-              alert("成功")
-              this.$route.push('admin/managerArticle')
+              this.$notify({
+            title: '更新',
+          message: '自动保存成功',
+          type: 'success'
+        });
+              // alert("更新成功")
+              // this.$route.push('admin/managerArticle')
             }else{
               alert(res.data.message)
           }
         })
         }else{
-          addArticle()
-        }
-      },
-      addArticle(){
-        this.addArticleParas.content = this.editor.getHtml()
+          this.addArticleParas.content = this.editor.getHtml()
         PostAddArticleApi(this.addArticleParas).then(res=>{
           if (res.data.status === 0) {
-            alert("成功")
-            this.$router.push('/admin/managerArticle')
+            this.addArticleParas.id = res.data.data.id
+            this.$notify({
+            title: '增加',
+          message: '自动保存成功',
+          type: 'success'
+        });
+            // this.$router.push('/admin/managerArticle')
           }else{
             alert(res.data.message)
           }
         })
+        }
       },
       initUpload(){
         const token = window.sessionStorage.getItem('token')
